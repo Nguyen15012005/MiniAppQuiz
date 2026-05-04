@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 
 function App() {
-  const [questions, setQuestions] = useState([]); // 👈 mảng
+  const [allowed, setAllowed] = useState(false); // 👈 chặn vào app
+
+  const [questions, setQuestions] = useState([]);
   const [current, setCurrent] = useState(1);
   const [selected, setSelected] = useState("");
   const [showAnswer, setShowAnswer] = useState(false);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
 
-  // ✅ load 1 lần duy nhất
+  // load data
   useEffect(() => {
     fetch("/data/quiz.json")
       .then((res) => res.json())
@@ -16,7 +18,6 @@ function App() {
       .catch(() => setFinished(true));
   }, []);
 
-  // ✅ lấy câu theo ID
   const question = questions.find((q) => q.id === current);
 
   const handleSelect = (key) => {
@@ -46,6 +47,35 @@ function App() {
   const progress =
     questions.length > 0 ? ((current - 1) / questions.length) * 100 : 0;
 
+  // ===== MÀN HÌNH CHẶN =====
+  if (!allowed) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-500 to-purple-600 text-white px-4">
+        <div className="bg-white text-black p-6 rounded-2xl shadow-2xl w-full max-w-md text-center">
+          <h1 className="text-2xl font-bold mb-4">
+            Nguyễn Nam Trung Nguyên có đẹp trai không? 😎
+          </h1>
+
+          <div className="flex gap-4 justify-center">
+            <button
+              onClick={() => setAllowed(true)}
+              className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600"
+            >
+              Có 👍
+            </button>
+
+            <button
+              onClick={() => alert("Sai rồi 😏, chọn lại đi!")}
+              className="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600"
+            >
+              Không ❌
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // ===== FINISH =====
   if (finished) {
     return (
@@ -63,12 +93,14 @@ function App() {
     );
   }
 
-  if (!question)
+  // ===== LOADING =====
+  if (!question) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         Loading...
       </div>
     );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 flex items-center justify-center px-3">
