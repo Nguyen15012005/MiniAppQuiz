@@ -150,9 +150,8 @@ function App() {
           );
         })}
 
-        {/* RESULT */}
         {showAnswer && (
-          <div className="mt-4 text-sm">
+          <div className="mt-4 text-sm space-y-2">
             {selected === question.answer ? (
               <p className="text-green-600 font-semibold">✅ Chính xác</p>
             ) : (
@@ -160,6 +159,12 @@ function App() {
                 ❌ Sai — Đáp án: {question.answer}
               </p>
             )}
+
+            {/* 👇 GIẢI THÍCH */}
+            <div className="bg-gray-100 p-3 rounded-xl">
+              <p className="font-semibold text-indigo-600">💡 Giải thích:</p>
+              <p className="text-gray-700">{question.explanation}</p>
+            </div>
           </div>
         )}
 
